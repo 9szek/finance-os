@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Boss Sek Finance OS</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section class="login-screen" id="loginScreen">
+      <div class="login-card">
+        <div class="brand login-brand">
+          <div class="brand-mark">BS</div>
+          <div>
+            <strong>Finance OS</strong>
+            <span>Quick PIN Login</span>
+          </div>
+        </div>
+        <h1>ลงชื่อเข้ากรองข้อมูล</h1>
+        <p>พนักงานใช้ User ID และ PIN ของร้านตัวเอง เพื่อไม่ให้ข้อมูลปนกัน</p>
+        <div class="portal-links">
+          <a href="./staff.html">หน้าพนักงาน</a>
+          <a href="./owner.html">หน้าเจ้าของ</a>
+          <a href="./admin.html">หลังบ้าน Admin</a>
+        </div>
+        <form id="loginForm" class="login-form">
+          <label>
+            User ID
+            <input id="loginUserId" autocomplete="username" placeholder="เช่น sk_staff01" />
+          </label>
+          <label>
+            PIN
+            <input id="loginPin" autocomplete="current-password" inputmode="numeric" maxlength="8" type="password" placeholder="4-8 หลัก" />
+          </label>
+          <button class="primary-button" type="submit">Login</button>
+          <div class="login-error" id="loginError"></div>
+        </form>
+        <div class="demo-accounts">
+          <strong>บัญชีเริ่มต้น</strong>
+          <span>admin / 9999</span>
+          <span>owner / 8888</span>
+          <span>sk_staff01 / 1111</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Business navigation">
+        <div class="brand">
+          <div class="brand-mark">BS</div>
+          <div>
+            <strong>Finance OS</strong>
+            <span>Boss Sek HQ</span>
+          </div>
+        </div>
+
+        <nav class="business-nav" id="businessNav"></nav>
+
+        <div class="sidebar-note">
+          <span>ผู้ใช้ปัจจุบัน</span>
+          <strong id="currentUserLabel">-</strong>
+          <button class="ghost-button sidebar-logout" id="logoutButton">Logout</button>
+        </div>
+
+        <div class="sidebar-note">
+          <span>ลิงก์ระบบ</span>
+          <div class="sidebar-links">
+            <a href="./staff.html">Staff</a>
+            <a href="./owner.html">Owner</a>
+            <a href="./admin.html">Admin</a>
+          </div>
+        </div>
+
+        <div class="sidebar-note">
+          <span>ช่วงข้อมูล</span>
+          <strong>1 ม.ค. 2569 - วันนี้</strong>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <h1>ระบบกรองข้อมูลการเงินประจำวัน</h1>
+            <p>พนักงานส่งข้อมูล เจ้าของดูผลประกอบการ และบัญชีตรวจหลักฐานในที่เดียว</p>
+          </div>
+          <div class="topbar-controls">
+            <label>
+              วันที่ทำงาน
+              <input id="workDate" type="date" />
+            </label>
+            <label>
+              เริ่ม
+              <input id="startDate" type="date" />
+            </label>
+            <label>
+              ถึง
+              <input id="endDate" type="date" />
+            </label>
+            <button class="ghost-button" id="seedTodayButton">โหลดตัวอย่างวันนี้</button>
+            <button class="ghost-button" id="exportCsvButton">Export CSV</button>
+          </div>
+        </header>
+
+        <section class="status-strip" id="statusStrip"></section>
+
+        <section class="main-grid">
+          <section class="panel intake-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Staff Daily Intake</h2>
+                <p>อัปโหลดรูปใบปิดกะ สลิป บิล แล้วให้ AI อ่านข้อมูลก่อนส่งตรวจ</p>
+              </div>
+              <span class="status-pill">Draft</span>
+            </div>
+
+            <form id="intakeForm" class="intake-form">
+              <div class="form-row">
+                <label>
+                  ร้าน
+                  <select id="businessSelect"></select>
+                </label>
+                <label>
+                  ประเภทหลักฐาน
+                  <select id="evidenceType">
+                    <option value="ใบปิดกะ">ใบปิดกะ</option>
+                    <option value="สลิปโอน">สลิปโอน</option>
+                    <option value="บิลค่าใช้จ่าย">บิลค่าใช้จ่าย</option>
+                    <option value="เงินสดในลิ้นชัก">เงินสดในลิ้นชัก</option>
+                    <option value="รายงาน POS">รายงาน POS</option>
+                  </select>
+                </label>
+              </div>
+
+              <label class="upload-zone" for="evidenceUpload">
+                <input id="evidenceUpload" type="file" accept="image/*,.pdf" multiple />
+                <span class="upload-icon">+</span>
+                <strong>อัปโหลดรูปหรือไฟล์หลักฐาน</strong>
+                <small>รองรับรูปใบปิดกะ / สลิป / บิล ค่าใช้จ่ายหลายไฟล์</small>
+              </label>
+              <div class="preview-grid" id="evidencePreview"></div>
+
+              <div class="form-row four">
+                <label>เงินสด <input id="revenueCash" type="number" min="0" step="0.01" /></label>
+                <label>เงินโอน <input id="revenueTransfer" type="number" min="0" step="0.01" /></label>
+                <label>รายจ่าย <input id="expense" type="number" min="0" step="0.01" /></label>
+                <label>เงินสดนับได้ <input id="cashCount" type="number" min="0" step="0.01" /></label>
+              </div>
+              <div class="form-row four">
+                <label>จำนวนบิล <input id="ordersBills" type="number" min="0" step="1" /></label>
+                <label>จำนวนลูกค้า <input id="customers" type="number" min="0" step="1" /></label>
+                <label>สต๊อก/ทุน <input id="inventoryValue" type="number" min="0" step="0.01" /></label>
+                <label>
+                  ยืนยันยอดตั้งต้น
+                  <select id="confirmInitial">
+                    <option value="NO">NO</option>
+                    <option value="YES">YES</option>
+                  </select>
+                </label>
+              </div>
+
+              <label>
+                หมายเหตุ
+                <textarea id="notes" rows="3" placeholder="เช่น รูปอ่านไม่ชัด / มีรายการต้องให้บัญชีตรวจ"></textarea>
+              </label>
+
+              <div class="button-row">
+                <button type="button" class="secondary-button" id="extractButton">AI อ่านจากรูป</button>
+                <button type="submit" class="primary-button">ส่งเข้าคิวตรวจ</button>
+              </div>
+            </form>
+
+            <div class="review-table-wrap">
+              <div class="section-heading">
+                <h3>รายการรอตรวจ</h3>
+                <span id="queueCount">0 รายการ</span>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>ร้าน</th>
+                    <th>รายรับ</th>
+                    <th>รายจ่าย</th>
+                    <th>เงินสด</th>
+                    <th>AI</th>
+                    <th>สถานะ</th>
+                    <th>จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="reviewRows"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel owner-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Owner Performance</h2>
+                <p>ผลประกอบการรวม 4 ร้าน พร้อมสัญญาณเตือนและคำแนะนำ AI</p>
+              </div>
+              <button class="ghost-button" id="ownerViewButton">Owner View</button>
+            </div>
+
+            <div class="kpi-grid" id="kpiGrid"></div>
+
+            <div class="chart-panel">
+              <div class="section-heading">
+                <h3>กำไรสุทธิแยกร้าน</h3>
+                <span>เดือนปัจจุบัน</span>
+              </div>
+              <div class="bar-chart" id="profitChart"></div>
+            </div>
+
+            <div class="analysis-box">
+              <div class="analysis-icon">AI</div>
+              <div>
+                <h3>AI วิเคราะห์ธุรกิจ</h3>
+                <p id="aiSummary"></p>
+              </div>
+            </div>
+
+            <div class="risk-list" id="riskList"></div>
+          </section>
+        </section>
+
+        <section class="panel ledger-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Accounting Ledger</h2>
+              <p>โครงสร้างตามหลักบัญชี: หลักฐานต้นฉบับ → รายการธุรกรรม → รายงาน</p>
+            </div>
+            <div class="filters">
+              <select id="ledgerBusinessFilter"></select>
+              <select id="ledgerStatusFilter">
+                <option value="all">ทุกสถานะ</option>
+                <option value="Draft">Draft</option>
+                <option value="Reviewed">Reviewed</option>
+                <option value="Approved">Approved</option>
+              </select>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>วันที่</th>
+                <th>ร้าน</th>
+                <th>ประเภท</th>
+                <th>หมวด</th>
+                <th>จำนวนเงิน</th>
+                <th>หลักฐาน</th>
+                <th>ผู้ส่ง</th>
+                <th>สถานะ</th>
+                <th>ตรวจ</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerRows"></tbody>
+          </table>
+        </section>
+
+        <section class="panel audit-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Audit Trail</h2>
+              <p>บันทึกการอ่าน AI, ส่งตรวจ, อนุมัติ และ export เพื่อให้ตรวจย้อนหลังได้</p>
+            </div>
+            <button class="ghost-button" id="resetDemoButton">Reset Demo Data</button>
+          </div>
+          <div class="audit-list" id="auditList"></div>
+        </section>
+
+        <section class="panel admin-panel" id="adminPanel">
+          <div class="panel-header">
+            <div>
+              <h2>Admin User Management</h2>
+              <p>สร้าง User ID และ PIN ให้พนักงาน แยกร้านและสิทธิ์ใช้งาน</p>
+            </div>
+            <span class="status-pill">Admin only</span>
+          </div>
+
+          <form id="userForm" class="intake-form">
+            <div class="form-row four">
+              <label>User ID <input id="newUserId" placeholder="เช่น heng_staff02" /></label>
+              <label>ชื่อพนักงาน <input id="newUserName" placeholder="ชื่อที่แสดงในระบบ" /></label>
+              <label>
+                ร้าน
+                <select id="newUserBusiness"></select>
+              </label>
+              <label>
+                Role
+                <select id="newUserRole">
+                  <option value="staff">staff</option>
+                  <option value="manager">manager</option>
+                  <option value="accountant">accountant</option>
+                  <option value="owner">owner</option>
+                  <option value="admin">admin</option>
+                </select>
+              </label>
+            </div>
+            <div class="form-row">
+              <label>PIN <input id="newUserPin" inputmode="numeric" maxlength="8" placeholder="4-8 หลัก" /></label>
+              <label>สถานะ
+                <select id="newUserActive">
+                  <option value="true">Active</option>
+                  <option value="false">Inactive</option>
+                </select>
+              </label>
+            </div>
+            <div class="button-row">
+              <button type="submit" class="primary-button">สร้าง / อัปเดต User</button>
+            </div>
+          </form>
+
+          <div class="review-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>ชื่อ</th>
+                  <th>ร้าน</th>
+                  <th>Role</th>
+                  <th>สถานะ</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="userRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
