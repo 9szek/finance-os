@@ -1,0 +1,12 @@
+.DS_Store
+.tmp.drivedownload/
+.tmp.driveupload/
+
+# Local QA screenshots
+Boss Sek HQ/07_PRODUCT_SOFTWARE/Boss Sek Finance App/*.png
+
+# Excel backups generated before imports
+Boss Sek HQ/03_FINANCE_REPORTS/*backup*.xlsx
+
+# Python cache
+__pycache__/
